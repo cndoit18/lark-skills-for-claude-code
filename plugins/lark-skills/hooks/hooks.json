@@ -1,0 +1,15 @@
+{
+  "description": "Detects Lark and Feishu URLs in user prompts and suggests the appropriate Lark skill",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/lark-url-detector.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

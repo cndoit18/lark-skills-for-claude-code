@@ -1,50 +1,34 @@
-## Lark URL Detection — Mandatory Routing Protocol
+## Feishu/Lark URL Handling Protocol
 
-A Lark/Feishu URL was detected. You **MUST** follow this protocol. Deviations are unacceptable.
+A Feishu/Lark URL was detected in the user's message. You must treat it as a Feishu/Lark resource and use the Feishu CLI-backed `lark-skills:*` capabilities to handle it.
 
-### Mandatory Constraints
+### Required Behavior
 
-- You **MUST** use `lark-*` skills to operate on Lark resources
-- You **MUST NOT** manually parse URL paths, construct raw HTTP requests, or use browser tools
-- You **MUST NOT** guess which skill to invoke — use the routing table or fallback strategy below
+- Use the `Skill` tool with an appropriate `lark-skills:*` skill before answering any question about the resource.
+- Pass the user's original request to the skill, including the full URL and the intended action.
+- Treat the URL as a Feishu/Lark resource, not as a generic webpage.
+- Do not answer from the URL text alone.
+- Do not manually parse the URL to infer resource contents, metadata, or IDs.
+- Do not use browser tools, raw HTTP requests, or hand-written Lark OpenAPI calls for this resource.
 
-### Routing Table
+### Skill Selection
 
-Match the URL path segment against these keywords (first match wins):
+Do not rely on a hard-coded routing table. The available `lark-skills:*` skill names, descriptions, and prompts are the source of truth.
 
-| URL Path Keywords             | Skill                            | Resource Type            |
-| ----------------------------- | -------------------------------- | ------------------------ |
-| `docx`, `doc`                 | `/lark-doc`                      | Document                 |
-| `sheets`, `sheet`             | `/lark-sheets`                   | Spreadsheet              |
-| `base`, `bitable`             | `/lark-base`                     | Base (Bitable)           |
-| `drive`, `folder`, `file`     | `/lark-drive`                    | Drive                    |
-| `wiki`, `ospace`              | `/lark-wiki`                     | Wiki                     |
-| `slides`, `presentation`      | `/lark-slides`                   | Slides                   |
-| `im`, `chat`, `message`       | `/lark-im`                       | Messaging                |
-| `whiteboard`, `board`         | `/lark-whiteboard`               | Whiteboard               |
-| `calendar`                    | `/lark-calendar`                 | Calendar                 |
-| `mail`                        | `/lark-mail`                     | Mail                     |
-| `task`, `todo`                | `/lark-task`                     | Task                     |
-| `vc`, `meeting`               | `/lark-vc`                       | Video Conference         |
-| `minutes`                     | `/lark-minutes`                  | Minutes                  |
-| `approval`                    | `/lark-approval`                 | Approval                 |
-| `contacts`                    | `/lark-contact`                  | Contacts                 |
-| `attendance`, `打卡`          | `/lark-attendance`               | Attendance               |
-| `event`, `events`             | `/lark-event`                    | Event Subscription       |
-| `workflow`, `meeting-summary` | `/lark-workflow-meeting-summary` | Meeting Summary Workflow |
-| `workflow`, `standup`         | `/lark-workflow-standup-report`  | Standup Report Workflow  |
-| `skill-maker`                 | `/lark-skill-maker`              | Skill Creation           |
-| `whiteboard-cli`              | `/lark-whiteboard-cli`           | Whiteboard CLI           |
-| `shared`, `config`            | `/lark-shared`                   | Shared Configuration     |
+1. Determine the user's intended action, such as read, summarize, edit, inspect, search, send, schedule, or manage.
+2. Choose the `lark-skills:*` skill whose capability best matches the action and the apparent Feishu/Lark resource type.
+3. Prefer the most specific matching skill.
+4. If the selected skill indicates that another Feishu/Lark resource type or skill is required, switch to that skill and retry.
 
-### Fallback Strategy
+### Ambiguous Resource Type
 
-When no path keyword matches:
+If the URL or user wording is not enough to choose a skill confidently:
 
-1. Use `/lark-openapi-explorer` to search for a relevant API
-2. Extract the token/ID from the URL, query its resource type via `/lark-drive`, then re-route using the table above
+- Use `lark-skills:lark-drive` when the task is to resolve, identify, or inspect a Feishu/Lark URL or token.
+- Use `lark-skills:lark-openapi-explorer` only when API or resource-family discovery is needed.
+- Ask the user for the resource type only if the CLI-backed skills cannot determine a safe route.
 
-### Enforcement
+### Response Requirements
 
-- Routing errors caused by guessing constitute a protocol violation
-- When uncertain, always apply the fallback strategy — two-step resolution is always preferable to a wrong route
+- Before invoking the skill, briefly say that a Feishu/Lark URL was detected and that you will use a Feishu CLI-backed Lark skill to handle it.
+- After the skill finishes, answer only from the skill result.

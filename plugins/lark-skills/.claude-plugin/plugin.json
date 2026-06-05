@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "lark-skills",
+  "description": "Claude Code plugin exposing Lark/Feishu skills directly from cli/skills through a wrapper plugin directory",
+  "author": {
+    "name": "LarkSuite"
+  },
+  "homepage": "https://github.com/larksuite/cli",
+  "repository": "https://github.com/larksuite/cli.git",
+  "license": "MIT",
+  "keywords": [
+    "lark",
+    "feishu",
+    "claude-code",
+    "skills",
+    "calendar",
+    "docs",
+    "messaging"
+  ]
+}

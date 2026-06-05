@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "lark-skills-marketplace",
+  "version": "1.0.0",
+  "description": "Local Claude Code marketplace for installing Lark CLI skills through a wrapper plugin directory backed by the cli submodule",
+  "owner": {
+    "name": "LarkSuite"
+  },
+  "plugins": [
+    {
+      "name": "lark-skills",
+      "description": "Lark/Feishu Claude Code skills sourced directly from cli/skills through a wrapper plugin directory",
+      "source": "./plugins/lark-skills",
+      "category": "productivity"
+    }
+  ]
+}

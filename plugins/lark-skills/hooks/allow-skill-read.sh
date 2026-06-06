@@ -31,8 +31,13 @@ if [[ ! -f "$REAL_PATH" ]]; then
 	exit 0
 fi
 
-while IFS= read -r allowed_dir; do
-	if [[ -n "$allowed_dir" && "$REAL_PATH" == "$allowed_dir/"* ]]; then
+while IFS= read -r allowed_skill; do
+	if [[ -z "$allowed_skill" || ! "$allowed_skill" =~ ^lark-[A-Za-z0-9._-]+$ ]]; then
+		continue
+	fi
+
+	allowed_dir="$SKILLS_ROOT/$allowed_skill"
+	if [[ -d "$allowed_dir" && "$REAL_PATH" == "$allowed_dir/"* ]]; then
 		echo '{"hookSpecificOutput":{"hookEventName":"PermissionRequest","decision":{"behavior":"allow"}}}'
 		exit 0
 	fi
